@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ResumeAI - Smart Resume Analyzer</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f7f8ff;
+            color: #202040;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        nav {
+            height: 75px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7%;
+            background: white;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.06);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #6c3cff;
+        }
+
+        .logo span {
+            color: #ff4f9a;
+        }
+
+        nav ul {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, #6c3cff, #ff4f9a);
+            color: white;
+            padding: 12px 22px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* ================= HERO ================= */
+
+        .hero {
+            min-height: 620px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 70px 7%;
+
+            background:
+                radial-gradient(circle at 10% 20%, #ddd5ff 0, transparent 30%),
+                radial-gradient(circle at 90% 30%, #ffd4e7 0, transparent 30%),
+                linear-gradient(135deg, #f8f5ff, #fff5fa);
+        }
+
+        .hero-content {
+            width: 52%;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 9px 17px;
+            border-radius: 30px;
+            background: #eee9ff;
+            color: #6c3cff;
+            font-weight: bold;
+            margin-bottom: 22px;
+        }
+
+        .hero h1 {
+            font-size: 58px;
+            line-height: 1.08;
+            margin-bottom: 22px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(90deg, #6c3cff, #ff4f9a);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            font-size: 19px;
+            line-height: 1.7;
+            color: #666;
+            max-width: 620px;
+            margin-bottom: 30px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .primary-btn {
+            border: none;
+            padding: 15px 28px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #6c3cff, #ff4f9a);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(108,60,255,0.25);
+        }
+
+        .secondary-btn {
+            padding: 15px 28px;
+            border-radius: 30px;
+            border: 2px solid #6c3cff;
+            background: white;
+            color: #6c3cff;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* ================= SCORE CARD ================= */
+
+        .score-card {
+            width: 390px;
+            padding: 35px;
+            background: rgba(255,255,255,0.85);
+            border-radius: 30px;
+            box-shadow: 0 25px 60px rgba(60,30,120,0.18);
+            backdrop-filter: blur(10px);
+        }
+
+        .score-card h3 {
+            margin-bottom: 20px;
+        }
+
+        .score-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            margin: 20px auto;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            background: conic-gradient(#6c3cff 82%, #eee 0);
+
+            position: relative;
+        }
+
+        .score-circle::before {
+            content: "";
+
+            position: absolute;
+
+            width: 135px;
+            height: 135px;
+
+            background: white;
+            border-radius: 50%;
+        }
+
+        .score-number {
+            position: relative;
+            font-size: 42px;
+            font-weight: bold;
+            color: #6c3cff;
+        }
+
+        .score-label {
+            position: relative;
+            color: #777;
+        }
+
+        .skill {
+            display: flex;
+            justify-content: space-between;
+
+            padding: 12px;
+            margin-top: 8px;
+
+            border-radius: 10px;
+            background: #f7f5ff;
+        }
+
+        .skill.good {
+            color: #159447;
+        }
+
+        .skill.bad {
+            color: #e84565;
+        }
+
+        /* ================= SECTION ================= */
+
+        .section-title {
+            font-size: 38px;
+            margin-bottom: 12px;
+        }
+
+        .section-subtitle {
+            color: #777;
+            margin-bottom: 45px;
+        }
+
+        /* ================= FEATURES ================= */
+
+        .features {
+            padding: 90px 7%;
+            text-align: center;
+            background: white;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+
+        .feature-card {
+            padding: 30px 20px;
+            border-radius: 22px;
+
+            background: #faf9ff;
+            border: 1px solid #eee;
+
+            transition: 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        }
+
+        .feature-icon {
+            font-size: 42px;
+            margin-bottom: 18px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            color: #777;
+            line-height: 1.6;
+        }
+
+        /* ================= HOW IT WORKS ================= */
+
+        .how {
+            padding: 90px 7%;
+            text-align: center;
+
+            background:
+                linear-gradient(135deg, #f8f5ff, #fff4f9);
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 30px;
+            margin-top: 45px;
+        }
+
+        .step {
+            background: white;
+
+            padding: 35px;
+            border-radius: 22px;
+
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+
+            margin: 0 auto 20px;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: linear-gradient(135deg, #6c3cff, #ff4f9a);
+
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        /* ================= REAL ANALYZER ================= */
+
+        .analyzer {
+            padding: 90px 7%;
+
+            text-align: center;
+
+            background:
+                linear-gradient(135deg, #f8f5ff, #fff5fa);
+        }
+
+        .analyzer-box {
+            max-width: 750px;
+
+            margin: auto;
+
+            background: white;
+
+            padding: 35px;
+
+            border-radius: 25px;
+
+            box-shadow:
+                0 15px 40px rgba(60,30,120,0.12);
+
+            text-align: left;
+        }
+
+        .input-label {
+            display: block;
+
+            font-weight: bold;
+
+            margin-bottom: 10px;
+
+            color: #202040;
+        }
+
+        .file-input {
+            width: 100%;
+
+            padding: 14px;
+
+            margin-bottom: 25px;
+
+            border: 2px dashed #6c3cff;
+
+            border-radius: 12px;
+
+            background: #faf9ff;
+
+            cursor: pointer;
+        }
+
+        .job-description {
+            width: 100%;
+
+            height: 180px;
+
+            padding: 15px;
+
+            border: 1px solid #ddd;
+
+            border-radius: 12px;
+
+            resize: vertical;
+
+            font-size: 15px;
+
+            outline: none;
+        }
+
+        .job-description:focus {
+            border: 2px solid #6c3cff;
+        }
+
+        .analyze-btn {
+            width: 100%;
+
+            margin-top: 20px;
+
+            padding: 16px;
+
+            border: none;
+
+            border-radius: 30px;
+
+            background:
+                linear-gradient(135deg, #6c3cff, #ff4f9a);
+
+            color: white;
+
+            font-size: 17px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 10px 25px rgba(108,60,255,0.25);
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* ================= RESULTS ================= */
+
+        #result {
+            margin-top: 30px;
+
+            display: none;
+        }
+
+        .result-box {
+            padding: 30px;
+
+            background: #f7f5ff;
+
+            border-radius: 20px;
+        }
+
+        .result-title {
+            color: #6c3cff;
+
+            margin-bottom: 20px;
+        }
+
+        .result-score {
+            font-size: 55px;
+
+            color: #ff4f9a;
+
+            margin-bottom: 20px;
+        }
+
+        .matched-title {
+            margin-top: 20px;
+
+            color: #159447;
+        }
+
+        .missing-title {
+            margin-top: 20px;
+
+            color: #e84565;
+        }
+
+        .loading-box {
+            padding: 20px;
+
+            text-align: center;
+
+            background: #f7f5ff;
+
+            border-radius: 15px;
+
+            color: #6c3cff;
+
+            font-weight: bold;
+        }
+
+        .error-box {
+            padding: 20px;
+
+            background: #ffe8ee;
+
+            color: #d6304c;
+
+            border-radius: 15px;
+        }
+
+        /* ================= PRICING ================= */
+
+        .pricing {
+            padding: 90px 7%;
+
+            text-align: center;
+
+            background: white;
+        }
+
+        .price-grid {
+            display: grid;
+
+            grid-template-columns: repeat(2, 320px);
+
+            justify-content: center;
+
+            gap: 30px;
+
+            margin-top: 45px;
+        }
+
+        .price-card {
+            padding: 35px;
+
+            border-radius: 25px;
+
+            border: 1px solid #eee;
+
+            text-align: left;
+        }
+
+        .price-card.pro {
+            background:
+                linear-gradient(145deg, #6c3cff, #ff4f9a);
+
+            color: white;
+
+            transform: scale(1.04);
+        }
+
+        .price {
+            font-size: 38px;
+
+            font-weight: bold;
+
+            margin: 18px 0;
+        }
+
+        .price-card ul {
+            list-style: none;
+
+            line-height: 2;
+
+            margin-bottom: 25px;
+        }
+
+        .price-btn {
+            width: 100%;
+
+            padding: 13px;
+
+            border-radius: 25px;
+
+            border: none;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            background: #17132d;
+
+            color: white;
+
+            padding: 45px 7%;
+
+            text-align: center;
+        }
+
+        footer p {
+            color: #aaa;
+
+            margin-top: 10px;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 900px) {
+
+            nav ul {
+                display: none;
+            }
+
+            .hero {
+                flex-direction: column;
+
+                gap: 50px;
+
+                text-align: center;
+            }
+
+            .hero-content {
+                width: 100%;
+            }
+
+            .hero h1 {
+                font-size: 42px;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+
+                flex-wrap: wrap;
+            }
+
+            .score-card {
+                width: 100%;
+
+                max-width: 390px;
+            }
+
+            .feature-grid,
+            .steps {
+                grid-template-columns: 1fr;
+            }
+
+            .price-grid {
+                grid-template-columns: 1fr;
+
+                width: 100%;
+            }
+
+            .price-card {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ================= NAVBAR ================= -->
+
+    <nav>
+
+        <div class="logo">
+            Resume<span>AI</span> 🤖
+        </div>
+
+        <ul>
+
+            <li>
+                <a href="#features">
+                    Features
+                </a>
+            </li>
+
+            <li>
+                <a href="#how">
+                    How It Works
+                </a>
+            </li>
+
+            <li>
+                <a href="#pricing">
+                    Pricing
+                </a>
+            </li>
+
+        </ul>
+
+        <a href="#analyzer" class="nav-btn">
+            Analyze Resume
+        </a>
+
+    </nav>
+
+
+    <!-- ================= HERO ================= -->
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <div class="badge">
+                ✨ AI-Powered Resume Analysis
+            </div>
+
+            <h1>
+                Your Resume.
+                <span>Smarter.</span>
+                Stronger.
+            </h1>
+
+            <p>
+                Discover how well your resume matches your dream job.
+                Get an instant ATS score, identify missing skills and
+                improve your chances of getting shortlisted.
+            </p>
+
+            <div class="hero-buttons">
+
+                <button
+                    class="primary-btn"
+                    onclick="document.getElementById('analyzer').scrollIntoView({behavior:'smooth'})"
+                >
+                    🚀 Analyze My Resume
+                </button>
+
+                <button
+                    class="secondary-btn"
+                    onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})"
+                >
+                    ▶ See How It Works
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- SCORE CARD -->
+
+        <div class="score-card">
+
+            <h3>
+                🤖 AI Resume Analysis
+            </h3>
+
+            <div class="score-circle">
+
+                <div class="score-number">
+                    82%
+                </div>
+
+                <div class="score-label">
+                    Match Score
+                </div>
+
+            </div>
+
+            <div class="skill good">
+                <span>
+                    ✓ Python
+                </span>
+
+                <span>
+                    Matched
+                </span>
+            </div>
+
+            <div class="skill good">
+                <span>
+                    ✓ SQL
+                </span>
+
+                <span>
+                    Matched
+                </span>
+            </div>
+
+            <div class="skill bad">
+                <span>
+                    ✕ React
+                </span>
+
+                <span>
+                    Missing
+                </span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FEATURES ================= -->
+
+    <section
+        class="features"
+        id="features"
+    >
+
+        <h2 class="section-title">
+            Everything You Need to Get Hired
+        </h2>
+
+        <p class="section-subtitle">
+            Powerful tools designed for modern job seekers.
+        </p>
+
+
+        <div class="feature-grid">
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    📊
+                </div>
+
+                <h3>
+                    ATS Score
+                </h3>
+
+                <p>
+                    Understand how well your resume performs
+                    against applicant tracking systems.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    🎯
+                </div>
+
+                <h3>
+                    Job Matching
+                </h3>
+
+                <p>
+                    Compare your resume with a specific job
+                    description and calculate compatibility.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    🧠
+                </div>
+
+                <h3>
+                    AI Insights
+                </h3>
+
+                <p>
+                    Get intelligent recommendations to improve
+                    your resume and skills.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    💡
+                </div>
+
+                <h3>
+                    Skill Gap
+                </h3>
+
+                <p>
+                    Discover important skills you're missing
+                    for your target job.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= HOW IT WORKS ================= -->
+
+    <section
+        class="how"
+        id="how"
+    >
+
+        <h2 class="section-title">
+            How ResumeAI Works
+        </h2>
+
+        <p class="section-subtitle">
+            Three simple steps to understand your resume.
+        </p>
+
+
+        <div class="steps">
+
+
+            <div class="step">
+
+                <div class="step-number">
+                    1
+                </div>
+
+                <h3>
+                    Upload Resume
+                </h3>
+
+                <p>
+                    Upload your resume in PDF format.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">
+                    2
+                </div>
+
+                <h3>
+                    Add Job Description
+                </h3>
+
+                <p>
+                    Paste the job description you're targeting.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">
+                    3
+                </div>
+
+                <h3>
+                    Get AI Analysis
+                </h3>
+
+                <p>
+                    Receive your match score, matched skills
+                    and missing skills.
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= REAL ANALYZER ================= -->
+
+    <section
+        class="analyzer"
+        id="analyzer"
+    >
+
+        <h2 class="section-title">
+            🚀 Analyze Your Resume
+        </h2>
+
+        <p class="section-subtitle">
+            Upload your resume and paste a job description
+            to get your match score.
+        </p>
+
+
+        <div class="analyzer-box">
+
+
+            <!-- RESUME -->
+
+            <label class="input-label">
+                📄 Upload Resume (PDF)
+            </label>
+
+            <input
+                type="file"
+                id="resumeFile"
+                class="file-input"
+                accept=".pdf"
+            >
+
+
+            <!-- JOB DESCRIPTION -->
+
+            <label class="input-label">
+                💼 Job Description
+            </label>
+
+            <textarea
+                id="jobDescription"
+                class="job-description"
+                placeholder="Paste the job description here..."
+            ></textarea>
+
+
+            <!-- BUTTON -->
+
+            <button
+                id="analyzeButton"
+                class="analyze-btn"
+            >
+                🤖 Analyze My Resume
+            </button>
+
+
+            <!-- RESULT -->
+
+            <div id="result"></div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= PRICING ================= -->
+
+    <section
+        class="pricing"
+        id="pricing"
+    >
+
+        <h2 class="section-title">
+            Simple Plans for Job Seekers
+        </h2>
+
+        <p class="section-subtitle">
+            Start free. Upgrade when you need more.
+        </p>
+
+
+        <div class="price-grid">
+
+
+            <!-- FREE -->
+
+            <div class="price-card">
+
+                <h3>
+                    Free
+                </h3>
+
+                <div class="price">
+                    ₹0
+                </div>
+
+                <ul>
+
+                    <li>
+                        ✓ Basic ATS Score
+                    </li>
+
+                    <li>
+                        ✓ Skill Matching
+                    </li>
+
+                    <li>
+                        ✓ Missing Skills
+                    </li>
+
+                    <li>
+                        ✓ Limited Analyses
+                    </li>
+
+                </ul>
+
+                <button class="price-btn">
+                    Start Free
+                </button>
+
+            </div>
+
+
+            <!-- PRO -->
+
+            <div class="price-card pro">
+
+                <h3>
+                    ⭐ Pro
+                </h3>
+
+                <div class="price">
+                    ₹199
+                </div>
+
+                <ul>
+
+                    <li>
+                        ✓ Unlimited Analysis
+                    </li>
+
+                    <li>
+                        ✓ Advanced ATS Analysis
+                    </li>
+
+                    <li>
+                        ✓ AI Resume Suggestions
+                    </li>
+
+                    <li>
+                        ✓ Skill Gap Analysis
+                    </li>
+
+                    <li>
+                        ✓ Downloadable Reports
+                    </li>
+
+                </ul>
+
+                <button class="price-btn">
+                    Upgrade to Pro
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <h2>
+            ResumeAI 🤖
+        </h2>
+
+        <p>
+            Build a better resume. Find better opportunities.
+        </p>
+
+        <p>
+            © 2026 ResumeAI. All rights reserved.
+        </p>
+
+    </footer>
+
+
+    <!-- ================================================= -->
+    <!--                  JAVASCRIPT                       -->
+    <!--              ONLY ONE SCRIPT                      -->
+    <!-- ================================================= -->
+
+    <script>
+
+
+document.getElementById("analyzeButton").onclick = async function () {
+
+    const fileInput = document.getElementById("resumeFile");
+    const jobInput = document.getElementById("jobDescription");
+    const result = document.getElementById("result");
+    const button = document.getElementById("analyzeButton");
+
+    const resumeFile = fileInput.files[0];
+    const jobDescription = jobInput.value.trim();
+
+    if (!resumeFile) {
+        alert("Please upload your resume PDF.");
+        return;
+    }
+
+    if (!jobDescription) {
+        alert("Please enter the job description.");
+        return;
+    }
+
+    button.disabled = true;
+    button.innerHTML = "🤖 Analyzing...";
+
+    result.style.display = "block";
+
+    result.innerHTML = `
+        <div class="loading-box">
+            🤖 AI is analyzing your resume...
+            <br><br>
+            Please wait...
+        </div>
+    `;
+
+    const formData = new FormData();
+
+    formData.append("resume", resumeFile);
+    formData.append("job_description", jobDescription);
+
+    try {
+
+        const response = await fetch(
+            "http://127.0.0.1:8000/analyze",
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        const data = await response.json();
+
+        console.log("RESULT FROM BACKEND:", data);
+
+        if (!response.ok) {
+            throw new Error(
+                data.detail || "Analysis failed"
+            );
+        }
+
+        result.innerHTML = `
+            <div class="result-box">
+
+                <h2 class="result-title">
+                    🎯 Resume Analysis Result
+                </h2>
+
+                <h1 class="result-score">
+                    ${data.match_score}%
+                </h1>
+                <p>
+                    <strong>📄 ATS Score:</strong>
+                    ${data.ats_score}%
+                    </p>
+
+                <p>
+                    <strong>📄 Resume:</strong>
+                    ${data.resume_filename}
+                </p>
+
+                <h3 class="matched-title">
+                    ✅ Matched Skills
+                </h3>
+
+                <p>
+                    ${
+                        data.matched_skills &&
+                        data.matched_skills.length > 0
+                        ? data.matched_skills.join(", ")
+                        : "No matched skills"
+                    }
+                </p>
+
+                <h3 class="missing-title">
+                    ❌ Missing Skills
+                </h3>
+
+                <p>
+                    ${
+                        data.missing_skills &&
+                        data.missing_skills.length > 0
+                        ? data.missing_skills.join(", ")
+                        : "No missing skills 🎉"
+                    }
+                </p>
+
+            </div>
+        `;
+
+    } catch (error) {
+
+        console.error("ERROR:", error);
+
+        result.innerHTML = `
+            <div class="error-box">
+
+                ❌ Something went wrong.
+
+                <br><br>
+
+                ${error.message}
+
+            </div>
+        `;
+
+    } finally {
+
+        button.disabled = false;
+        button.innerHTML = "🤖 Analyze My Resume";
+
+    }
+
+};
+
+</script>
+
+</body>
+</html>
